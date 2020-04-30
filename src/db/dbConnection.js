@@ -6,26 +6,29 @@ pool.on('connect', () => {
 });
 
 /**
- * Create Partner Table
+ * Create Product Table
  */
-const createPartnerTable = () => {
-  const userPartnerQuery = `CREATE TABLE IF NOT EXISTS partners
-  (messageRootID SERIAL PRIMARY KEY,
-  id VARCHAR(100) UNIQUE NOT NULL,
+const createProductTable = () => {
+
+  const userProductQuery = `CREATE TABLE IF NOT EXISTS products
+  (
+  messageRootID VARCHAR(100) UNIQUE NOT NULL,
   companyName VARCHAR(100),
   productType VARCHAR(100),
   description VARCHAR(100),
   productionLine VARCHAR(100),
   productionBatch VARCHAR(100),
-  productionTime VARCHAR(100),
-  created_on DATE NOT NULL)`;
+  productionTime VARCHAR(100)
+ )`;
 
-  pool.query(userPartnerQuery)
+  pool.query(userProductQuery)
     .then((res) => {
+      console.log("ok");
       console.log(res);
       pool.end();
     })
     .catch((err) => {
+      console.log("ok2");
       console.log(err);
       pool.end();
     });
@@ -33,11 +36,11 @@ const createPartnerTable = () => {
 
 
 /**
- * Drop Partner Table
+ * Drop Product Table
  */
-const dropPartnerTable = () => {
-  const partnerDropQuery = 'DROP TABLE IF EXISTS partners';
-  pool.query(partnerDropQuery)
+const dropProductTable = () => {
+  const ProductDropQuery = 'DROP TABLE IF EXISTS products';
+  pool.query(ProductDropQuery)
     .then((res) => {
       console.log(res);
       pool.end();
@@ -53,7 +56,7 @@ const dropPartnerTable = () => {
  * Create All Tables
  */
 const createAllTables = () => {
-  createPartnerTable();
+  createProductTable();
 };
 
 
@@ -61,7 +64,7 @@ const createAllTables = () => {
  * Drop All Tables
  */
 const dropAllTables = () => {
-  dropPartnerTable();
+  dropProductTable();
 };
 
 pool.on('remove', () => {
@@ -71,7 +74,7 @@ pool.on('remove', () => {
 
 
 module.exports = {
-  createPartnerTable
+  createProductTable
 };
 
 createAllTables()

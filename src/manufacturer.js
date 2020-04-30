@@ -4,6 +4,7 @@ const { createChannel, createMessage, parseMessage, mamAttach } = require('@iota
 const crypto = require('crypto');
 const product = require('./product')
 const Product = product.Product
+const { createProduct } = require('./db/query')
 
 function generateSeed(length) {
     const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ9';
@@ -60,7 +61,8 @@ function create_product()
             console.log('Root:', mamMessage.root);
             console.log('NextRoot:', channelState.nextRoot);
 
-            //Add this to database
+            product.messageRootID = mamMessage.root
+            createProduct(product)
 
             const decodedMessage = parseMessage(mamMessage.payload, mamMessage.root, sideKey);
 

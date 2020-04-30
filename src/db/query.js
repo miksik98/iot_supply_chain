@@ -1,21 +1,21 @@
-import pool from './pool';
+const { pool }  = require('./pool');
 
-export default {
-  /**
-   * DB Query
-   * @param {object} req
-   * @param {object} res
-   * @returns {object} object
-   */
-  query(quertText, params) {
-    return new Promise((resolve, reject) => {
-      pool.query(quertText, params)
-        .then((res) => {
-          resolve(res);
-        })
-        .catch((err) => {
-          reject(err);
-        });
-    });
-  },
+const createProduct = (request) => {
+  console.log(request)
+  const { messageRootID, companyName, productType, description, productionLine, productionBatch, productionTime } = request
+
+  pool.query('INSERT INTO products (messageRootID, companyName, productType, description, productionLine, productionBatch, productionTime) VALUES ($1, $2, $3, $4, $5, $6, $7)', [messageRootID, companyName, productType, description, productionLine, productionBatch, productionTime], (error, results) => {
+    if (error) {
+      throw error
+    }
+
+    console.log(`Product added with ID: ${messageRootID}`)
+    return results.insertId
+  })
+}
+
+
+
+module.exports = {
+  createProduct
 };
