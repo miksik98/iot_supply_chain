@@ -40,20 +40,21 @@ function create_product()
             console.log(err);
             return 1;
         } else {
-            const productType = result.type
-            const ID = result.ID
-            const description = result.description
-            const productionLine = result.productionLine
-            const productionBatch = result.productionBatch
+            const productType = result.type;
+            const ID = result.ID;
+            const description = result.description;
+            const productionLine = result.productionLine;
+            const productionBatch = result.productionBatch;
             var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-            const productionTime = new Date(result.productionBatch.replace(pattern,'$3-$2-$1'))
+            const productionTime = new Date(result.productionBatch.replace(pattern,'$3-$2-$1'));
             const sideKey = asciiToTrytes(result.sideKey);
-            const seed = generateSeed(81);
+            const seed = 'EHDULKVCMQRKKCMOARNHQTNWIXMZQOZMXWEIBSDHIGFUXAKMVRDKTQAJJVEXJTT9YSUVGQCVIZFWNGGGZ'//generateSeed(81);
             const product = new Product(null, null, productType, ID, description, productionLine, productionBatch, productionTime)
 
             const mode = 'restricted';
+            console.log("seed "+seed)
             let channelState = createChannel(seed, 2, mode, sideKey)
-
+            console.log(channelState)
             const mamMessage = createMessage(channelState, asciiToTrytes(JSON.stringify(product)));
 
             console.log('Seed:', channelState.seed);
@@ -74,8 +75,7 @@ function create_product()
             console.log('Attaching to tangle, please wait...')
             await mamAttach(api, mamMessage, 3, 9, "MY9MAM");
             console.log(`You can view the mam channel here https://utils.iota.org/mam/${mamMessage.root}/${mode}/${sideKey}/devnet`);
-
         }
     });
 }
-create_product()
+create_product();
