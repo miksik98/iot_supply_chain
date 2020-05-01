@@ -1,24 +1,9 @@
 const { trytesToAscii, asciiToTrytes } = require('@iota/converter')
 const { composeAPI } = require('@iota/core');
 const { createChannel, channelRoot, mamFetchAll, createMessage, mamAttach, parseMessage } = require('@iota/mam.js');
-const crypto = require('crypto');
 const product = require('./product');
 const Product = product.Product;
-const security = 2;
-const globalProvider = "http://bare01.devnet.iota.cafe:14265";
-const mode = "restricted";
-
-function generateSeed(length) {
-    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ9';
-    let seed = '';
-    while (seed.length < length) {
-        const byte = crypto.randomBytes(1);
-        if (byte[0] < 243) {
-            seed += charset.charAt(byte[0] % 27);
-        }
-    }
-    return seed;
-}
+const {security, globalProvider, mode, generateSeed} = require("./utils")
 
 async function getProductMessage(seed, sideKey){
     const api = composeAPI({ provider: globalProvider });
@@ -51,7 +36,7 @@ async function newChannelForProduct(receivedProduct, seed, sideKey){
     console.log('Root:', mamMessage.root);
     console.log('NextRoot:', channelState.nextRoot);
 
-    product.messageRootID = mamMessage.root
+    product.messageRootID = mamMessage.root;
 
     const decodedMessage = parseMessage(mamMessage.payload, mamMessage.root, sideKey);
 
@@ -83,6 +68,7 @@ async function buyProduct(){
             const sellerSideKey = result.sellerSideKey;
             const buyerSeed = result.yourSeed;
             const buyerSideKey = result.yourSideKey;
+
             getProductMessage("EHDULKVCMQRKKCMOARNHQTNWIXMZQOZMXWEIBSDHIGFUXAKMVRDKTQAJJVEXJTT9YSUVGQCVIZFWNGGGZ",
                 "a")
                 .then(receivedProduct => {
@@ -92,4 +78,8 @@ async function buyProduct(){
     });
 }
 
-buyProduct();
+module.exports = {
+    getProductMessage,
+    buyProduct
+};
+
