@@ -9,6 +9,7 @@ const product = require('./product');
 const Product = product.Product;
 const { getProductMessage } = require('./buyer');
 const {security, globalProvider, mode, generateSeed} = require("./utils");
+const {checkIfExistsMessageInProducer, createProduct, saveMessageInProducer } = require("./db/query")
 
 function buy_compose() {
     var prompt_attributes = [

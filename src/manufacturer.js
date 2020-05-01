@@ -4,7 +4,7 @@ const { createChannel, createMessage, mamAttach } = require('@iota/mam.js');
 const product = require('./product');
 const Product = product.Product;
 const { generateSeed, security, globalProvider, mode } = require('./utils')
-const { createProduct, getProductByMessageRootID } = require('./db/query');
+const { createProduct, getProductByMessageRootID, saveMessageInProducer } = require('./db/query');
 
 function create_product(companyName, messageRootID)
 {
@@ -56,7 +56,9 @@ function create_product(companyName, messageRootID)
             product.messageRootID = mamMessage.root
             await createProduct(product)
             result =  await getProductByMessageRootID(product.messageRootID)
-            console.log( result + " messageRootID")
+            result2 = await saveMessageInProducer(product.messageRootID, companyName)
+            console.log( result.rows + " messageRootID")
+            console.log( result2 + " save")
             const api = composeAPI({provider: globalProvider});
 
             console.log('Attaching to tangle, please wait...')

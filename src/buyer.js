@@ -4,6 +4,7 @@ const { createChannel, channelRoot, mamFetchAll, createMessage, mamAttach, parse
 const product = require('./product');
 const Product = product.Product;
 const {security, globalProvider, mode, generateSeed} = require("./utils")
+const {checkIfExistsMessageInProducer, createProduct, saveMessageInProducer, removeProduct } = require("./db/query")
 
 async function getProductMessage(root, sideKey){
     const api = composeAPI({ provider: globalProvider });
@@ -21,6 +22,8 @@ async function getProductMessage(root, sideKey){
         message.description, message.productionLine, message.productionBatch, message.productionTime);
     console.log(root);
     p.setSellerInformation(sideKey, root);
+    checkIfExistsMessageInProducer(p.messageRootID, p.companyName)
+    removeProduct(p.messageRootID)
     console.log(p);
     return p
 }
