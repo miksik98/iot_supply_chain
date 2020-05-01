@@ -4,7 +4,7 @@ const { createChannel, createMessage, mamAttach } = require('@iota/mam.js');
 const product = require('./product');
 const Product = product.Product;
 const { generateSeed, security, globalProvider, mode } = require('./utils')
-const { createProduct } = require('./db/query');
+const { createProduct, getProductByMessageRootID } = require('./db/query');
 
 function create_product(companyName, messageRootID)
 {
@@ -12,13 +12,12 @@ function create_product(companyName, messageRootID)
 
     var prompt_attributes = [
         {name: 'type',},
-        {name: 'ID',},
         {name: 'description',},
         {name: 'productionLine',},
         {name: 'productionBatch',},
         {name: 'productionTime',},
         {name: 'seed'},
-        {name: 'sideKey'}
+        {name: 'companyName'}
     ];
 
     prompt.start();
@@ -29,15 +28,15 @@ function create_product(companyName, messageRootID)
             return 1;
         } else {
             const productType = result.type;
-            const ID = result.ID;
             const description = result.description;
             const productionLine = result.productionLine;
             const productionBatch = result.productionBatch;
             const pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
             const productionTime = new Date(result.productionBatch.replace(pattern,'$3-$2-$1'));
-            const sideKey = asciiToTrytes(result.sideKey);
+            const companyName = result.companyName;
+            const sideKey = asciiToTrytes(companyName);
             const seed = generateSeed(81);
-            let product = new Product(null, null, productType, ID, description, productionLine, productionBatch, productionTime)
+            let product = new Product(companyName, null, productType, description, productionLine, productionBatch, productionTime)
 
             if(companyName && messageRootID) {
                 product.setSellerInformation(companyName, messageRootID);
@@ -53,9 +52,11 @@ function create_product(companyName, messageRootID)
             console.log('Root:', mamMessage.root);
             console.log('NextRoot:', channelState.nextRoot);
 
-            //product.messageRootID = mamMessage.root;
-            //createProduct(product);
-
+            // save product to products table
+            product.messageRootID = mamMessage.root
+            await createProduct(product)
+            result =  await getProductByMessageRootID(product.messageRootID)
+            console.log( result + " messageRootID")
             const api = composeAPI({provider: globalProvider});
 
             console.log('Attaching to tangle, please wait...')

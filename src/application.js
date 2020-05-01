@@ -1,6 +1,7 @@
 const { buyProduct } = require('./buyer');
 const { buy_compose } = require('./buyer_compose');
 const { create_product } = require('./manufacturer')
+const { createProducer } = require('./producer')
 const prompt = require('prompt')
 
 prompt.start();
@@ -19,6 +20,9 @@ prompt.get([{name: 'mode'}], async function (err, result) {
                 break;
             case "create":
                 await create_product();
+                break;
+            case "create producer":
+                await createProducer();
                 break;
             default:
                 console.log("WRONG MODE")

@@ -1,8 +1,10 @@
-const { pool }  = require('./pool');
+const {
+    pool
+} = require('./pool');
 
 
 pool.on('connect', () => {
-  console.log('connected to the db');
+    console.log('connected to the db');
 });
 
 /**
@@ -10,7 +12,7 @@ pool.on('connect', () => {
  */
 const createProductTable = () => {
 
-  const userProductQuery = `CREATE TABLE IF NOT EXISTS products
+    const userProductQuery = `CREATE TABLE IF NOT EXISTS products
   (
   messageRootID VARCHAR(100) UNIQUE NOT NULL,
   companyName VARCHAR(100),
@@ -21,17 +23,29 @@ const createProductTable = () => {
   productionTime VARCHAR(100)
  )`;
 
-  pool.query(userProductQuery)
-    .then((res) => {
-      console.log("ok");
-      console.log(res);
-      pool.end();
-    })
-    .catch((err) => {
-      console.log("ok2");
-      console.log(err);
-      pool.end();
-    });
+    pool.query(userProductQuery)
+        .then((res) => {
+            console.log(res);
+            pool.end();
+        })
+        .catch((err) => {
+            console.log(err);
+            pool.end();
+        });
+};
+
+async function createProducerTable(name) {
+
+  try {
+        const sql = 'CREATE TABLE IF NOT EXISTS ' + name + '( messageRootID VARCHAR(100) UNIQUE NOT NULL )'
+        console.log(sql)
+        results = await  pool.query(sql)
+        console.log(results)
+        return results.rows
+    } catch (e) {
+        throw e
+    }
+
 };
 
 
@@ -39,16 +53,16 @@ const createProductTable = () => {
  * Drop Product Table
  */
 const dropProductTable = () => {
-  const ProductDropQuery = 'DROP TABLE IF EXISTS products';
-  pool.query(ProductDropQuery)
-    .then((res) => {
-      console.log(res);
-      pool.end();
-    })
-    .catch((err) => {
-      console.log(err);
-      pool.end();
-    });
+    const ProductDropQuery = 'DROP TABLE IF EXISTS products';
+    pool.query(ProductDropQuery)
+        .then((res) => {
+            console.log(res);
+            pool.end();
+        })
+        .catch((err) => {
+            console.log(err);
+            pool.end();
+        });
 };
 
 
@@ -56,7 +70,7 @@ const dropProductTable = () => {
  * Create All Tables
  */
 const createAllTables = () => {
-  createProductTable();
+    createProductTable();
 };
 
 
@@ -64,17 +78,16 @@ const createAllTables = () => {
  * Drop All Tables
  */
 const dropAllTables = () => {
-  dropProductTable();
+    dropProductTable();
 };
 
 pool.on('remove', () => {
-  console.log('client removed');
-  process.exit(0);
+    console.log('client removed');
+    process.exit(0);
 });
 
 
 module.exports = {
-  createProductTable
+    createProductTable,
+    createProducerTable
 };
-
-createAllTables()
