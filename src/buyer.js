@@ -23,7 +23,6 @@ async function getProductMessage(root, sideKey){
     console.log(root);
     p.setSellerInformation(sideKey, root);
     checkIfExistsMessageInProducer(p.messageRootID, p.companyName)
-    removeProduct(p.messageRootID)
     console.log(p);
     return p
 }

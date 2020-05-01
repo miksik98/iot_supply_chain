@@ -33,9 +33,9 @@ function buy_compose() {
             const lines = content.split(new RegExp("\\s+"));
             console.log(lines);
             for (let line of lines) {
-                const root = line.split(",")[0];
+                const rootMessage = line.split(",")[0];
                 const sideKey = line.split(",")[1];
-                await getProductMessage(root, sideKey).then(async function (receivedProduct) {
+                await getProductMessage(rootMessage, sideKey).then(async function (receivedProduct) {
                     try {
                         const currentState = fs.readFileSync('./channelState.json');
                         if (currentState) {
@@ -56,7 +56,7 @@ function buy_compose() {
                     console.log('NextRoot:', channelState.nextRoot);
 
                     try {
-                        fs.writeFileSync('./channelState.json', JSON.stringify(channelState, undefined, "\t"));
+                        await fs.writeFileSync('./channelState.json', JSON.stringify(channelState, undefined, "\t"));
                     } catch (e) {
                         console.error(e)
                     }

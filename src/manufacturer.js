@@ -36,7 +36,7 @@ function create_product(companyName, messageRootID)
             const companyName = result.companyName;
             const sideKey = asciiToTrytes(companyName);
             const seed = generateSeed(81);
-            let product = new Product(companyName, null, productType, description, productionLine, productionBatch, productionTime)
+            let product = new Product(null, null, productType, description, productionLine, productionBatch, productionTime)
 
             if(companyName && messageRootID) {
                 product.setSellerInformation(companyName, messageRootID);

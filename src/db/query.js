@@ -56,6 +56,7 @@ async function checkIfExistsMessageInProducer(messageRootID,producer) {
         result = await pool.query(sql)
         console.log(`Producer added with ID: ${messageRootID}`)
         if ( result.rows.length == 0 ) {
+            process.exit(0);
             throw new Error({'Invalid':'messageRootID'});
         }
     } catch (e) {
