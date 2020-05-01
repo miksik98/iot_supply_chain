@@ -32,9 +32,9 @@ function buy_compose() {
             const lines = content.split(new RegExp("\\s+"));
             console.log(lines);
             for (let line of lines) {
-                const seed = line.split(",")[0];
+                const root = line.split(",")[0];
                 const sideKey = line.split(",")[1];
-                await getProductMessage(seed, sideKey).then(async function (receivedProduct) {
+                await getProductMessage(root, sideKey).then(async function (receivedProduct) {
                     try {
                         const currentState = fs.readFileSync('./channelState.json');
                         if (currentState) {

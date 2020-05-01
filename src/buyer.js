@@ -5,11 +5,10 @@ const product = require('./product');
 const Product = product.Product;
 const {security, globalProvider, mode, generateSeed} = require("./utils")
 
-async function getProductMessage(seed, sideKey){
+async function getProductMessage(root, sideKey){
     const api = composeAPI({ provider: globalProvider });
     var message;
     console.log('Fetching from tangle, please wait...');
-    let root = channelRoot(createChannel(seed, security, mode, asciiToTrytes(sideKey)));
     const fetched = await mamFetchAll(api, root, mode, asciiToTrytes(sideKey));
     if (fetched && fetched.length > 0) {
         console.log('Fetched', trytesToAscii(fetched[0].message));
@@ -52,7 +51,7 @@ async function buyProduct(){
     var prompt = require('prompt');
 
     var prompt_attributes = [
-        {name: 'sellerSeed'},
+        {name: 'root'},
         {name: 'sellerSideKey'},
         {name: 'yourSeed'},
         {name: 'yourSideKey'}
@@ -64,13 +63,13 @@ async function buyProduct(){
             console.log(err);
             return 1;
         } else {
-            const sellerSeed = result.sellerSeed; // TODO add 82 83 lines to args of getProductMessage
+            const root = result.root;
             const sellerSideKey = result.sellerSideKey;
             const buyerSeed = result.yourSeed;
             const buyerSideKey = result.yourSideKey;
 
-            getProductMessage("EHDULKVCMQRKKCMOARNHQTNWIXMZQOZMXWEIBSDHIGFUXAKMVRDKTQAJJVEXJTT9YSUVGQCVIZFWNGGGZ",
-                "a")
+            getProductMessage(root,
+                sellerSideKey)
                 .then(receivedProduct => {
                     newChannelForProduct(receivedProduct, buyerSeed, buyerSideKey);
                 })
