@@ -18,3 +18,15 @@ Create product
 nodejs src/application
     - create
 ```
+
+Buy one product
+```
+nodejs src/application
+    - buy one
+```
+
+Collect many products to create new product containing them as its compontents
+```
+nodejs src/application
+    - buy many
+```
