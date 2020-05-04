@@ -2,7 +2,7 @@ How to run
 
 ```
 docker-compose up -d
-npm installl
+npm install
 nodejs src/application
 ```
 
